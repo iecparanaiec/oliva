@@ -59,6 +59,13 @@ nav a{
   font-weight:bold;
 }
 
+.volverBtn{
+  background:var(--olivaOscuro);
+  color:white !important;
+  padding:10px 16px;
+  border-radius:14px;
+}
+
 .header-actions{
   display:flex;
   align-items:center;
@@ -467,6 +474,21 @@ input,select,textarea{
   display:none;
 }
 
+.estadoCarga{
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.4;
+  color:var(--olivaOscuro);
+}
+
+.estadoCarga.ok{
+  color:#3f7b42;
+}
+
+.estadoCarga.error{
+  color:#a94442;
+}
+
 footer{
   margin:35px 6%;
   padding:32px;
@@ -477,40 +499,17 @@ footer{
 }
 
 @media(max-width:1100px){
-  .panel{
-    grid-template-columns:1fr;
-  }
-
-  .carrito{
-    position:relative;
-    top:0;
-  }
+  .panel{grid-template-columns:1fr}
+  .carrito{position:relative;top:0}
 }
 
 @media(max-width:800px){
-  header{
-    flex-direction:column;
-  }
-
-  nav{
-    text-align:center;
-  }
-
-  .hero{
-    padding:38px;
-  }
-
-  .hero h1{
-    font-size:48px;
-  }
-
-  .info{
-    grid-template-columns:1fr;
-  }
-
-  .filtros{
-    grid-template-columns:1fr;
-  }
+  header{flex-direction:column;gap:14px}
+  nav{text-align:center}
+  .hero{padding:38px}
+  .hero h1{font-size:48px}
+  .info{grid-template-columns:1fr}
+  .filtros{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -521,6 +520,7 @@ footer{
   <div class="logo"><span>Espacio</span>Oliva</div>
 
   <nav>
+    <a href="index.html" class="volverBtn">← Volver</a>
     <a href="#catalogo">Catálogo</a>
     <a href="#sobre">Sobre nosotros</a>
     <a href="#servicios">Servicios</a>
@@ -630,6 +630,7 @@ footer{
       <input id="adminPass" type="password" placeholder="Contraseña">
       <button onclick="validarLogin()">Ingresar</button>
       <button class="cerrar" onclick="cerrarLogin()">Cancelar</button>
+      <div id="loginEstado" class="estadoCarga"></div>
     </div>
 
     <div id="uploadBox" style="display:none;">
@@ -643,20 +644,104 @@ footer{
       <label class="uploadLabel" for="excel">📥 Subir Excel</label>
       <input type="file" id="excel" accept=".xlsx,.xls,.csv">
       <button class="cerrar" onclick="cerrarLogin()">Cerrar</button>
+      <div id="uploadEstado" class="estadoCarga"></div>
     </div>
   </div>
 </div>
 
 <script>
 const WHATSAPP_NUMERO = "5493434664964";
+const DATA_EXCEL_URL = "/data/catalogo.xlsx";
+const ADMIN_ENDPOINT = "/api/admin";
+const TIPO_EXCEL = "catalogo";
 
 let productos = [];
 let carrito = [];
 let categoriaActiva = "";
 let mensajePersonalizado = "";
+let adminSession = {
+  user: "",
+  pass: ""
+};
 
 function dinero(n){
   return "$" + Number(n || 0).toLocaleString("es-AR");
+}
+
+function setEstado(id, mensaje, tipo = ""){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = "estadoCarga " + tipo;
+  el.innerText = mensaje || "";
+}
+
+function normalizarProducto(f){
+  return {
+    nombre: f.nombre || f.Nombre || "Producto sin nombre",
+    categoria: f.categoria || f.Categoria || "Sin categoría",
+    marca: f.marca || f.Marca || "Espacio Oliva",
+    precio: Number(f.precio || f.Precio || 0),
+    stock: Number(f.stock || f.Stock || 0),
+    imagen: f.imagen || f.Imagen || "https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva"
+  };
+}
+
+async function cargarCatalogoDesdeData(){
+  try{
+    renderEstadoCatalogo("Cargando catálogo...");
+
+    const response = await fetch(DATA_EXCEL_URL + "?v=" + Date.now(), {
+      cache: "no-store"
+    });
+
+    if(!response.ok){
+      productos = [];
+      cargarFiltros();
+      renderProductos();
+      renderCarrito();
+      return;
+    }
+
+    const buffer = await response.arrayBuffer();
+
+    if(!buffer || buffer.byteLength === 0){
+      productos = [];
+      cargarFiltros();
+      renderProductos();
+      renderCarrito();
+      return;
+    }
+
+    const workbook = XLSX.read(buffer,{type:"array"});
+    const hoja = workbook.Sheets[workbook.SheetNames[0]];
+    const filas = XLSX.utils.sheet_to_json(hoja);
+
+    productos = filas.map(normalizarProducto);
+
+    carrito = [];
+    categoriaActiva = "";
+
+    cargarFiltros();
+    renderProductos();
+    renderCarrito();
+
+  }catch(error){
+    productos = [];
+    cargarFiltros();
+    renderProductos();
+    renderCarrito();
+    console.error("Error cargando catálogo:", error);
+  }
+}
+
+function renderEstadoCatalogo(texto){
+  const productosDiv = document.getElementById("productos");
+  productosDiv.innerHTML = `
+    <div class="emptyCatalog">
+      <h3>${texto}</h3>
+      <p>Espacio Oliva está preparando la información.</p>
+    </div>
+  `;
 }
 
 function cargarFiltros(){
@@ -729,7 +814,7 @@ function renderProductos(){
   }).join("") : `
     <div class="emptyCatalog">
       <h3>Catálogo sin productos cargados</h3>
-      <p>Ingresá como administrador desde el ícono superior y subí el archivo Excel para visualizar los productos.</p>
+      <p>Ingresá como administrador desde el ícono superior y subí el archivo Excel. Al guardarse en GitHub, todos van a verlo desde cualquier dispositivo.</p>
     </div>
   `;
 }
@@ -845,65 +930,138 @@ function abrirLogin(){
   document.getElementById("uploadBox").style.display = "none";
   document.getElementById("adminUser").value = "";
   document.getElementById("adminPass").value = "";
+  setEstado("loginEstado","");
+  setEstado("uploadEstado","");
 }
 
 function cerrarLogin(){
   document.getElementById("loginModal").style.display = "none";
 }
 
-function validarLogin(){
+async function validarLogin(){
   const user = document.getElementById("adminUser").value.trim();
   const pass = document.getElementById("adminPass").value.trim();
 
-  if(user === "FlorSolari" && pass === "Oliva449"){
+  if(!user || !pass){
+    setEstado("loginEstado","Completá usuario y contraseña.","error");
+    return;
+  }
+
+  setEstado("loginEstado","Validando acceso...");
+
+  try{
+    const response = await fetch(ADMIN_ENDPOINT,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        action:"login",
+        user,
+        pass
+      })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      setEstado("loginEstado", data.error || "Acceso denegado.","error");
+      return;
+    }
+
+    adminSession.user = user;
+    adminSession.pass = pass;
+
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("uploadBox").style.display = "block";
-  }else{
-    alert("Usuario o contraseña incorrectos.");
+    setEstado("uploadEstado","Acceso correcto. Ya podés subir el Excel.","ok");
+
+  }catch(error){
+    setEstado("loginEstado","No se pudo conectar con el backend.","error");
+    console.error(error);
   }
 }
 
-function normalizarProducto(f){
-  return {
-    nombre:f.nombre || f.Nombre || "Producto sin nombre",
-    categoria:f.categoria || f.Categoria || "Sin categoría",
-    marca:f.marca || f.Marca || "Espacio Oliva",
-    precio:Number(f.precio || f.Precio || 0),
-    stock:Number(f.stock || f.Stock || 0),
-    imagen:f.imagen || f.Imagen || "https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva"
-  };
+function archivoABase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const result = reader.result || "";
+      const base64 = String(result).split(",")[1];
+      resolve(base64);
+    };
+
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
-document.getElementById("excel").addEventListener("change", function(e){
+document.getElementById("excel").addEventListener("change", async function(e){
   const file = e.target.files[0];
   if(!file) return;
 
-  const reader = new FileReader();
+  if(!adminSession.user || !adminSession.pass){
+    setEstado("uploadEstado","Primero iniciá sesión como administrador.","error");
+    return;
+  }
 
-  reader.onload = function(evt){
-    const data = new Uint8Array(evt.target.result);
-    const workbook = XLSX.read(data,{type:"array"});
-    const hoja = workbook.Sheets[workbook.SheetNames[0]];
-    const filas = XLSX.utils.sheet_to_json(hoja);
+  setEstado("uploadEstado","Preparando archivo...");
 
-    productos = filas.map(normalizarProducto);
-    carrito = [];
-    categoriaActiva = "";
+  try{
+    const contentBase64 = await archivoABase64(file);
 
-    cargarFiltros();
-    renderProductos();
-    renderCarrito();
+    setEstado("uploadEstado","Subiendo Excel a GitHub...");
 
-    alert("Catálogo actualizado desde Excel.");
-    cerrarLogin();
-  };
+    const response = await fetch(ADMIN_ENDPOINT,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        action:"uploadExcel",
+        user:adminSession.user,
+        pass:adminSession.pass,
+        tipo:TIPO_EXCEL,
+        contentBase64
+      })
+    });
 
-  reader.readAsArrayBuffer(file);
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      setEstado("uploadEstado", data.error || "No se pudo subir el Excel.","error");
+      console.error(data);
+      return;
+    }
+
+    setEstado("uploadEstado","Excel guardado en GitHub. Actualizando catálogo...","ok");
+
+    await esperar(2500);
+    await cargarCatalogoDesdeData();
+
+    setEstado("uploadEstado","Catálogo actualizado correctamente.","ok");
+
+    setTimeout(()=>{
+      cerrarLogin();
+    },1200);
+
+  }catch(error){
+    setEstado("uploadEstado","Error al subir el archivo.","error");
+    console.error(error);
+  }finally{
+    e.target.value = "";
+  }
 });
+
+function esperar(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 cargarFiltros();
 renderProductos();
 renderCarrito();
+cargarCatalogoDesdeData();
 </script>
 
 </body>
