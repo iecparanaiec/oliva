@@ -668,13 +668,28 @@ function resolverImagen(valor){
 }
 
 function normalizarProducto(f){
+  const imagen =
+    f.imagen ||
+    f.Imagen ||
+    f.IMAGEN ||
+    f.foto ||
+    f.Foto ||
+    f.FOTO ||
+    f["imagen "] ||
+    f[" Imagen"] ||
+    f["Imagen "] ||
+    f[" link"] ||
+    f["link"] ||
+    f["Link"] ||
+    "";
+
   return {
     nombre: f.nombre || f.Nombre || "Producto sin nombre",
     categoria: f.categoria || f.Categoria || "Sin categoría",
     marca: f.marca || f.Marca || "Espacio Oliva",
     precio: Number(f.precio || f.Precio || 0),
     stock: Number(f.stock || f.Stock || 0),
-    imagen: resolverImagen(f.imagen || f.Imagen || f.foto || f.Foto)
+    imagen: resolverImagen(imagen)
   };
 }
 
