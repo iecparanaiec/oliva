@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espacio Oliva | Catálogo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+:root{
+  --oliva:#8f9570;
+  --olivaOscuro:#626a43;
+  --crema:#f5f0e4;
+  --beige:#e8dec8;
+  --blanco:#fffaf0;
+  --texto:#373426;
+  --sombra:0 14px 35px rgba(0,0,0,.16);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:Arial, sans-serif;
+  background:var(--crema);
+  color:var(--texto);
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(245,240,228,.95);
+  backdrop-filter:blur(10px);
+  padding:22px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+
+.logo{
+  font-family:Georgia, serif;
+  color:var(--olivaOscuro);
+  font-size:44px;
+  line-height:.85;
+}
+
+.logo span{
+  display:block;
+  font-size:22px;
+  font-style:italic;
+}
+
+nav a{
+  margin:0 14px;
+  color:var(--texto);
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.adminIcon{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:1px solid var(--olivaOscuro);
+  background:transparent;
+  color:var(--olivaOscuro);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.25s;
+}
+
+.adminIcon:hover{
+  background:var(--olivaOscuro);
+  color:white;
+}
+
+.adminIcon svg{
+  width:22px;
+  height:22px;
+}
+
+.carritoBtn{
+  background:var(--olivaOscuro);
+  color:white;
+  border:0;
+  padding:13px 20px;
+  border-radius:14px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.hero{
+  margin:25px 6%;
+  min-height:380px;
+  border-radius:28px;
+  background:
+  linear-gradient(90deg,rgba(98,106,67,.94),rgba(143,149,112,.35)),
+  url("https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80");
+  background-size:cover;
+  background-position:center;
+  color:white;
+  padding:70px;
+  box-shadow:var(--sombra);
+}
+
+.hero small{
+  font-family:Georgia, serif;
+  font-size:24px;
+  font-style:italic;
+}
+
+.hero h1{
+  font-family:Georgia, serif;
+  font-size:78px;
+  margin:12px 0;
+}
+
+.hero p{
+  max-width:460px;
+  font-size:20px;
+  line-height:1.5;
+}
+
+.info{
+  margin:25px 6%;
+  padding:25px;
+  background:var(--oliva);
+  color:white;
+  border-radius:18px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  text-align:center;
+  gap:20px;
+  box-shadow:var(--sombra);
+}
+
+.seccion{
+  margin:35px 6%;
+  background:var(--blanco);
+  padding:45px;
+  border-radius:26px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.seccion h2{
+  font-family:Georgia, serif;
+  color:var(--olivaOscuro);
+  font-size:44px;
+  margin-bottom:18px;
+}
+
+.seccion p{
+  font-size:18px;
+  line-height:1.7;
+  margin-bottom:12px;
+}
+
+.servicios{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
+  margin-top:25px;
+}
+
+.servicio{
+  background:var(--crema);
+  border-radius:18px;
+  padding:22px;
+}
+
+.servicio h3{
+  color:var(--olivaOscuro);
+  margin-bottom:8px;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  background:var(--olivaOscuro);
+  color:white;
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+.panel{
+  padding:35px 6%;
+  display:grid;
+  grid-template-columns:230px 1fr 340px;
+  gap:25px;
+}
+
+.sidebar,.carrito{
+  background:var(--blanco);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.sidebar h3,.carrito h3{
+  color:var(--olivaOscuro);
+  margin-bottom:18px;
+}
+
+.categoria{
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.categoria:hover,.categoria.activa{
+  background:var(--beige);
+}
+
+.filtros{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:22px;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:13px;
+  border-radius:13px;
+  border:1px solid #d6ccb9;
+  font-size:15px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:22px;
+}
+
+.card{
+  background:var(--blanco);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.card img{
+  width:100%;
+  height:190px;
+  object-fit:cover;
+}
+
+.cardBody{
+  padding:18px;
+}
+
+.rubro{
+  color:var(--olivaOscuro);
+  font-size:13px;
+  font-weight:bold;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.card h4{
+  font-size:19px;
+  min-height:45px;
+}
+
+.marca{
+  color:#736c5a;
+  font-size:14px;
+  margin-top:6px;
+}
+
+.precio{
+  font-size:24px;
+  color:var(--olivaOscuro);
+  font-weight:bold;
+  margin:14px 0;
+}
+
+.stock{
+  font-size:13px;
+  margin-bottom:10px;
+  color:#736c5a;
+}
+
+.cantidad{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.cantidad button{
+  background:var(--beige);
+  border:0;
+  padding:9px 13px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.agregar{
+  width:100%;
+  background:var(--oliva);
+  color:white;
+  border:0;
+  padding:12px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.emptyCatalog{
+  grid-column:1/-1;
+  background:var(--blanco);
+  border-radius:22px;
+  padding:45px;
+  text-align:center;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.emptyCatalog h3{
+  color:var(--olivaOscuro);
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.emptyCatalog p{
+  font-size:16px;
+  line-height:1.5;
+}
+
+.carrito{
+  background:var(--oliva);
+  color:white;
+  position:sticky;
+  top:115px;
+  height:max-content;
+}
+
+.carrito h3{
+  color:white;
+  font-size:26px;
+}
+
+.item{
+  display:grid;
+  grid-template-columns:1fr auto;
+  border-bottom:1px solid rgba(255,255,255,.3);
+  padding:13px 0;
+  gap:10px;
+}
+
+.item button{
+  background:transparent;
+  color:white;
+  border:1px solid white;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  cursor:pointer;
+}
+
+.total{
+  font-size:32px;
+  font-weight:bold;
+  margin:22px 0;
+}
+
+.whatsapp,.editar,.vaciar,.guardar{
+  width:100%;
+  border:0;
+  padding:13px;
+  border-radius:13px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+
+.whatsapp{
+  background:white;
+  color:var(--olivaOscuro);
+}
+
+.editar,.vaciar{
+  background:transparent;
+  color:white;
+  border:1px solid white;
+}
+
+.mensajeBox{
+  display:none;
+  margin-top:15px;
+}
+
+.mensajeBox textarea{
+  min-height:230px;
+}
+
+.guardar{
+  background:white;
+  color:var(--olivaOscuro);
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:999;
+  align-items:center;
+  justify-content:center;
+}
+
+.modalContent{
+  background:var(--blanco);
+  width:90%;
+  max-width:430px;
+  border-radius:24px;
+  padding:32px;
+  box-shadow:var(--sombra);
+  text-align:center;
+}
+
+.modalContent h2,.modalContent h3{
+  color:var(--olivaOscuro);
+  margin-bottom:15px;
+}
+
+.modalContent input{
+  margin-bottom:12px;
+}
+
+.modalContent button,.uploadLabel{
+  display:block;
+  width:100%;
+  background:var(--olivaOscuro);
+  color:white;
+  border:0;
+  padding:13px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.cerrar{
+  background:#b8aa8d!important;
+}
+
+#excel{
+  display:none;
+}
+
+footer{
+  margin:35px 6%;
+  padding:32px;
+  background:var(--oliva);
+  color:white;
+  border-radius:22px;
+  text-align:center;
+}
+
+@media(max-width:1100px){
+  .panel{
+    grid-template-columns:1fr;
+  }
+
+  .carrito{
+    position:relative;
+    top:0;
+  }
+}
+
+@media(max-width:800px){
+  header{
+    flex-direction:column;
+  }
+
+  nav{
+    text-align:center;
+  }
+
+  .hero{
+    padding:38px;
+  }
+
+  .hero h1{
+    font-size:48px;
+  }
+
+  .info{
+    grid-template-columns:1fr;
+  }
+
+  .filtros{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><span>Espacio</span>Oliva</div>
+
+  <nav>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#sobre">Sobre nosotros</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <div class="header-actions">
+    <button class="adminIcon" onclick="abrirLogin()" title="Acceso administrador">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21c1.6-4.4 5-6.5 8-6.5s6.4 2.1 8 6.5"></path>
+      </svg>
+    </button>
+
+    <button class="carritoBtn" onclick="document.querySelector('.carrito').scrollIntoView({behavior:'smooth'})">
+      🛒 Mi carrito <span id="contador">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <small>Bienvenidos a</small>
+  <h1>Espacio Oliva</h1>
+  <p>Un espacio para desconectarse, compartir, trabajar distinto y disfrutar productos seleccionados para cada momento.</p>
+</section>
+
+<section class="info">
+  <div>☕ <b>Cafetería</b><br>Productos seleccionados</div>
+  <div>🏢 <b>Empresas</b><br>Viandas y coffee break</div>
+  <div>🌿 <b>Experiencias</b><br>Eventos privados</div>
+</section>
+
+<section id="sobre" class="seccion">
+  <h2>Sobre Espacio Oliva</h2>
+  <p>Espacio Oliva es un lugar pensado para desconectarse del ritmo diario, bajar un cambio, compartir una charla, tener una reunión distinta o simplemente disfrutar un buen café.</p>
+  <p>Formamos parte del ecosistema IEC, ubicado en calle Gualeguaychú 449, en la ciudad de Paraná, Entre Ríos.</p>
+  <p>Desde la inteligencia operativa aplicada a recursos humanos, creemos que las empresas que cuidan a sus equipos construyen mejores ambientes laborales y fortalecen sus políticas de retención de talento.</p>
+  <p><b>Comer bien se trabaja mejor.</b></p>
+</section>
+
+<section id="servicios" class="seccion">
+  <h2>Servicios</h2>
+
+  <div class="servicios">
+    <div class="servicio"><h3>Alquiler de salón</h3><p>Eventos privados, reuniones y encuentros especiales.</p></div>
+    <div class="servicio"><h3>Reuniones empresariales</h3><p>Un espacio privado para trabajar distinto.</p></div>
+    <div class="servicio"><h3>Coffee break storming</h3><p>Café, ideas y productividad para equipos.</p></div>
+    <div class="servicio"><h3>Simposios</h3><p>Charlas, capacitaciones y encuentros institucionales.</p></div>
+    <div class="servicio"><h3>Oliva Games</h3><p>Experiencias recreativas para equipos.</p><span class="badge">Muy pronto</span></div>
+    <div class="servicio"><h3>Viandas empresariales</h3><p>Opciones gastronómicas para empleados y empresas.</p></div>
+    <div class="servicio"><h3>Multiespacio 100% privado</h3><p>Reservas exclusivas para empresas e instituciones.</p></div>
+  </div>
+</section>
+
+<main id="catalogo" class="panel">
+
+  <aside>
+    <div class="sidebar">
+      <h3>Categorías</h3>
+      <div id="categorias"></div>
+    </div>
+  </aside>
+
+  <section>
+    <div class="filtros">
+      <input id="buscar" placeholder="Buscar producto..." oninput="renderProductos()">
+      <select id="filtroCategoria" onchange="renderProductos()"></select>
+      <select id="filtroMarca" onchange="renderProductos()"></select>
+    </div>
+
+    <div class="grid" id="productos"></div>
+  </section>
+
+  <aside class="carrito">
+    <h3>Tu carrito</h3>
+    <div id="itemsCarrito"></div>
+    <div class="total" id="total">$0</div>
+
+    <button class="whatsapp" onclick="enviarWhatsApp()">Enviar pedido por WhatsApp</button>
+    <button class="editar" onclick="toggleMensaje()">Modificar mensaje</button>
+    <button class="vaciar" onclick="vaciarCarrito()">Vaciar carrito</button>
+
+    <div class="mensajeBox" id="mensajeBox">
+      <textarea id="mensajeManual"></textarea>
+      <button class="guardar" onclick="guardarMensaje()">Guardar mensaje</button>
+    </div>
+  </aside>
+
+</main>
+
+<section id="contacto" class="seccion">
+  <h2>Contacto</h2>
+  <p><b>Dirección:</b> Gualeguaychú 449, Paraná, Entre Ríos.</p>
+  <p><b>Propuesta:</b> cafetería, viandas, eventos privados, reuniones empresariales y experiencias para equipos.</p>
+</section>
+
+<footer>
+  Espacio Oliva · Ecosistema IEC · Gualeguaychú 449 · Paraná, Entre Ríos
+</footer>
+
+<div class="modal" id="loginModal">
+  <div class="modalContent">
+    <h2>Acceso administrador</h2>
+
+    <div id="loginBox">
+      <input id="adminUser" placeholder="Usuario">
+      <input id="adminPass" type="password" placeholder="Contraseña">
+      <button onclick="validarLogin()">Ingresar</button>
+      <button class="cerrar" onclick="cerrarLogin()">Cancelar</button>
+    </div>
+
+    <div id="uploadBox" style="display:none;">
+      <h3>Subir catálogo Excel</h3>
+      <p style="font-size:14px;margin-bottom:10px;">
+        Columnas requeridas: nombre, categoria, marca, precio, stock, imagen
+      </p>
+      <p style="font-size:13px;margin-bottom:12px;">
+        En la columna <b>imagen</b> pegá el link directo de Postimage.
+      </p>
+      <label class="uploadLabel" for="excel">📥 Subir Excel</label>
+      <input type="file" id="excel" accept=".xlsx,.xls,.csv">
+      <button class="cerrar" onclick="cerrarLogin()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WHATSAPP_NUMERO = "5493434664964";
+
+let productos = [];
+let carrito = [];
+let categoriaActiva = "";
+let mensajePersonalizado = "";
+
+function dinero(n){
+  return "$" + Number(n || 0).toLocaleString("es-AR");
+}
+
+function cargarFiltros(){
+  const categoriasLista = ["", ...new Set(productos.map(p=>p.categoria))];
+  const marcasLista = ["", ...new Set(productos.map(p=>p.marca))];
+
+  document.getElementById("filtroCategoria").innerHTML =
+    categoriasLista.map(c=>`<option value="${c}">${c || "Todas las categorías"}</option>`).join("");
+
+  document.getElementById("filtroMarca").innerHTML =
+    marcasLista.map(m=>`<option value="${m}">${m || "Todas las marcas"}</option>`).join("");
+
+  renderCategorias();
+}
+
+function renderCategorias(){
+  const cats = ["Todos los productos", ...new Set(productos.map(p=>p.categoria))];
+
+  document.getElementById("categorias").innerHTML = cats.map(c=>`
+    <div class="categoria ${categoriaActiva === c || (!categoriaActiva && c==="Todos los productos") ? "activa":""}"
+      onclick="seleccionarCategoria('${c.replace(/'/g,"\\'")}')">
+      ${c}
+    </div>
+  `).join("");
+}
+
+function seleccionarCategoria(c){
+  categoriaActiva = c === "Todos los productos" ? "" : c;
+  document.getElementById("filtroCategoria").value = categoriaActiva;
+  renderCategorias();
+  renderProductos();
+}
+
+function renderProductos(){
+  const q = document.getElementById("buscar").value.toLowerCase();
+  const cat = document.getElementById("filtroCategoria").value;
+  const marca = document.getElementById("filtroMarca").value;
+
+  const lista = productos.filter(p =>
+    p.nombre.toLowerCase().includes(q) &&
+    (!cat || p.categoria === cat) &&
+    (!marca || p.marca === marca)
+  );
+
+  const productosDiv = document.getElementById("productos");
+
+  productosDiv.innerHTML = lista.length ? lista.map(p=>{
+    const i = productos.indexOf(p);
+
+    return `
+      <article class="card">
+        <img src="${p.imagen}" onerror="this.src='https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva'">
+        <div class="cardBody">
+          <div class="rubro">${p.categoria}</div>
+          <h4>${p.nombre}</h4>
+          <p class="marca">${p.marca}</p>
+          <div class="precio">${dinero(p.precio)}</div>
+          <div class="stock">Stock disponible: ${p.stock}</div>
+
+          <div class="cantidad">
+            <button onclick="cambiarCantidad(${i},-1)">−</button>
+            <span id="cant-${i}">1</span>
+            <button onclick="cambiarCantidad(${i},1)">+</button>
+          </div>
+
+          <button class="agregar" onclick="agregarCarrito(${i})">Agregar al carrito</button>
+        </div>
+      </article>
+    `;
+  }).join("") : `
+    <div class="emptyCatalog">
+      <h3>Catálogo sin productos cargados</h3>
+      <p>Ingresá como administrador desde el ícono superior y subí el archivo Excel para visualizar los productos.</p>
+    </div>
+  `;
+}
+
+function cambiarCantidad(i,delta){
+  const el = document.getElementById("cant-"+i);
+  if(!el) return;
+
+  let n = Number(el.innerText) + delta;
+  if(n < 1) n = 1;
+
+  el.innerText = n;
+}
+
+function agregarCarrito(i){
+  const el = document.getElementById("cant-"+i);
+  const cantidad = el ? Number(el.innerText) : 1;
+  const p = productos[i];
+
+  const existe = carrito.find(x=>x.nombre === p.nombre);
+
+  if(existe){
+    existe.cantidad += cantidad;
+  }else{
+    carrito.push({...p,cantidad});
+  }
+
+  mensajePersonalizado = "";
+  renderCarrito();
+}
+
+function eliminarItem(i){
+  carrito.splice(i,1);
+  mensajePersonalizado = "";
+  renderCarrito();
+}
+
+function vaciarCarrito(){
+  carrito = [];
+  mensajePersonalizado = "";
+  renderCarrito();
+}
+
+function renderCarrito(){
+  const total = carrito.reduce((a,p)=>a + Number(p.precio) * Number(p.cantidad),0);
+  const cant = carrito.reduce((a,p)=>a + Number(p.cantidad),0);
+
+  document.getElementById("contador").innerText = cant;
+
+  document.getElementById("itemsCarrito").innerHTML = carrito.length ? carrito.map((p,i)=>`
+    <div class="item">
+      <div>
+        <b>${p.nombre}</b><br>
+        ${p.cantidad} x ${dinero(p.precio)}
+      </div>
+      <button onclick="eliminarItem(${i})">×</button>
+    </div>
+  `).join("") : "<p>Tu carrito está vacío.</p>";
+
+  document.getElementById("total").innerText = dinero(total);
+  document.getElementById("mensajeManual").value = generarMensaje();
+}
+
+function generarMensaje(){
+  if(mensajePersonalizado) return mensajePersonalizado;
+
+  if(carrito.length === 0){
+    return "¡Hola! Quiero hacer una consulta sobre Espacio Oliva.";
+  }
+
+  const total = carrito.reduce((a,p)=>a + Number(p.precio) * Number(p.cantidad),0);
+
+  let mensaje = "¡Hola! 👋\n\n";
+  mensaje += "Quiero hacer una consulta sobre estos productos/servicios de Espacio Oliva:\n\n";
+
+  carrito.forEach(p=>{
+    mensaje += `• ${p.nombre} x${p.cantidad} - ${dinero(Number(p.precio) * Number(p.cantidad))}\n`;
+  });
+
+  mensaje += `\nSubtotal estimado: ${dinero(total)}\n\n`;
+
+  if(carrito.some(p=>p.categoria.toLowerCase().includes("vianda"))){
+    mensaje += "Me interesa consultar por viandas empresariales, disponibilidad, menú y entrega para empleados.\n";
+  }else if(carrito.some(p=>p.categoria.toLowerCase().includes("empresa"))){
+    mensaje += "Me interesa consultar propuestas para empresas, coffee break o reuniones.\n";
+  }else{
+    mensaje += "Quedo atento/a a la disponibilidad.\n";
+  }
+
+  mensaje += "\n¡Gracias!";
+  return mensaje;
+}
+
+function toggleMensaje(){
+  const box = document.getElementById("mensajeBox");
+  box.style.display = box.style.display === "block" ? "none" : "block";
+  document.getElementById("mensajeManual").value = generarMensaje();
+}
+
+function guardarMensaje(){
+  mensajePersonalizado = document.getElementById("mensajeManual").value;
+  alert("Mensaje guardado.");
+}
+
+function enviarWhatsApp(){
+  const mensaje = encodeURIComponent(document.getElementById("mensajeManual").value || generarMensaje());
+  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`,"_blank");
+}
+
+function abrirLogin(){
+  document.getElementById("loginModal").style.display = "flex";
+  document.getElementById("loginBox").style.display = "block";
+  document.getElementById("uploadBox").style.display = "none";
+  document.getElementById("adminUser").value = "";
+  document.getElementById("adminPass").value = "";
+}
+
+function cerrarLogin(){
+  document.getElementById("loginModal").style.display = "none";
+}
+
+function validarLogin(){
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+
+  if(user === "FlorSolari" && pass === "Oliva449"){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("uploadBox").style.display = "block";
+  }else{
+    alert("Usuario o contraseña incorrectos.");
+  }
+}
+
+function normalizarProducto(f){
+  return {
+    nombre:f.nombre || f.Nombre || "Producto sin nombre",
+    categoria:f.categoria || f.Categoria || "Sin categoría",
+    marca:f.marca || f.Marca || "Espacio Oliva",
+    precio:Number(f.precio || f.Precio || 0),
+    stock:Number(f.stock || f.Stock || 0),
+    imagen:f.imagen || f.Imagen || "https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva"
+  };
+}
+
+document.getElementById("excel").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(evt){
+    const data = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(data,{type:"array"});
+    const hoja = workbook.Sheets[workbook.SheetNames[0]];
+    const filas = XLSX.utils.sheet_to_json(hoja);
+
+    productos = filas.map(normalizarProducto);
+    carrito = [];
+    categoriaActiva = "";
+
+    cargarFiltros();
+    renderProductos();
+    renderCarrito();
+
+    alert("Catálogo actualizado desde Excel.");
+    cerrarLogin();
+  };
+
+  reader.readAsArrayBuffer(file);
+});
+
+cargarFiltros();
+renderProductos();
+renderCarrito();
+</script>
+
+</body>
+</html>
