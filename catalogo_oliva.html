@@ -71,9 +71,7 @@ nav a{
   border-radius:14px;
 }
 
-nav a:hover{
-  background:var(--beige);
-}
+nav a:hover{background:var(--beige)}
 
 .volverBtn{
   background:var(--olivaOscuro);
@@ -230,6 +228,7 @@ input,select,textarea{
   object-fit:contain;
   background:var(--crema);
   padding:8px;
+  cursor:zoom-in;
 }
 
 .cardBody{
@@ -451,6 +450,57 @@ input,select,textarea{
   color:#a94442;
 }
 
+.zoomModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  background:rgba(0,0,0,.82);
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+
+.zoomContent{
+  width:100%;
+  max-width:920px;
+  max-height:92vh;
+  background:var(--blanco);
+  border-radius:24px;
+  padding:16px;
+  position:relative;
+  box-shadow:var(--sombra);
+}
+
+.zoomContent img{
+  width:100%;
+  max-height:78vh;
+  object-fit:contain;
+  border-radius:18px;
+  background:var(--crema);
+}
+
+.zoomCerrar{
+  position:absolute;
+  top:-14px;
+  right:-14px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:0;
+  background:var(--olivaOscuro);
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+}
+
+.zoomTitulo{
+  margin-top:10px;
+  color:var(--olivaOscuro);
+  font-weight:bold;
+  text-align:center;
+}
+
 footer{
   margin:35px 6%;
   padding:32px;
@@ -604,6 +654,25 @@ footer{
     font-size:12px;
   }
 
+  .zoomModal{
+    padding:12px;
+  }
+
+  .zoomContent{
+    padding:10px;
+    border-radius:18px;
+  }
+
+  .zoomContent img{
+    max-height:74vh;
+    border-radius:14px;
+  }
+
+  .zoomCerrar{
+    top:8px;
+    right:8px;
+  }
+
   footer{
     margin:18px 4%;
     padding:22px;
@@ -737,6 +806,14 @@ footer{
       <button class="cerrar" onclick="cerrarLogin()">Cerrar</button>
       <div id="uploadEstado" class="estadoCarga"></div>
     </div>
+  </div>
+</div>
+
+<div class="zoomModal" id="zoomModal" onclick="cerrarZoom()">
+  <div class="zoomContent" onclick="event.stopPropagation()">
+    <button class="zoomCerrar" onclick="cerrarZoom()">×</button>
+    <img id="zoomImg" src="">
+    <div class="zoomTitulo" id="zoomTitulo"></div>
   </div>
 </div>
 
@@ -924,7 +1001,7 @@ function renderProductos(){
 
     return `
       <article class="card">
-        <img src="${p.imagen}" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImagen()}'">
+        <img src="${p.imagen}" referrerpolicy="no-referrer" loading="lazy" onclick="abrirZoom(${i})" onerror="this.onerror=null;this.src='${fallbackImagen()}'">
         <div class="cardBody">
           <div class="rubro">${p.categoria}</div>
           <h4>${p.nombre}</h4>
@@ -948,6 +1025,20 @@ function renderProductos(){
       <p>Ingresá como administrador y subí el archivo Excel. Al guardarse en GitHub, todos van a verlo desde cualquier dispositivo.</p>
     </div>
   `;
+}
+
+function abrirZoom(index){
+  const p = productos[index];
+  if(!p) return;
+
+  document.getElementById("zoomImg").src = p.imagen;
+  document.getElementById("zoomTitulo").innerText = p.nombre || "Producto";
+  document.getElementById("zoomModal").style.display = "flex";
+}
+
+function cerrarZoom(){
+  document.getElementById("zoomModal").style.display = "none";
+  document.getElementById("zoomImg").src = "";
 }
 
 function cambiarCantidad(i,delta){
