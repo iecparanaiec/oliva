@@ -1,0 +1,18 @@
+{
+  "name": "espacio-oliva",
+  "version": "1.0.0",
+  "description": "Sistema web de Espacio Oliva con GitHub como almacenamiento y Vercel Functions.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
