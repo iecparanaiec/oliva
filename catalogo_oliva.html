@@ -106,51 +106,6 @@ nav a{
   cursor:pointer;
 }
 
-.hero{
-  margin:25px 6%;
-  min-height:380px;
-  border-radius:28px;
-  background:
-  linear-gradient(90deg,rgba(98,106,67,.94),rgba(143,149,112,.35)),
-  url("https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80");
-  background-size:cover;
-  background-position:center;
-  color:white;
-  padding:70px;
-  box-shadow:var(--sombra);
-}
-
-.hero small{
-  font-family:Georgia, serif;
-  font-size:24px;
-  font-style:italic;
-}
-
-.hero h1{
-  font-family:Georgia, serif;
-  font-size:78px;
-  margin:12px 0;
-}
-
-.hero p{
-  max-width:460px;
-  font-size:20px;
-  line-height:1.5;
-}
-
-.info{
-  margin:25px 6%;
-  padding:25px;
-  background:var(--oliva);
-  color:white;
-  border-radius:18px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  text-align:center;
-  gap:20px;
-  box-shadow:var(--sombra);
-}
-
 .seccion{
   margin:35px 6%;
   background:var(--blanco);
@@ -172,36 +127,24 @@ nav a{
   margin-bottom:12px;
 }
 
-.servicios{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:18px;
-  margin-top:25px;
+.compacta{
+  padding:26px;
+  margin:22px 6%;
 }
 
-.servicio{
-  background:var(--crema);
-  border-radius:18px;
-  padding:22px;
+.compacta h2{
+  font-size:32px;
+  margin-bottom:10px;
 }
 
-.servicio h3{
-  color:var(--olivaOscuro);
-  margin-bottom:8px;
-}
-
-.badge{
-  display:inline-block;
-  margin-top:10px;
-  background:var(--olivaOscuro);
-  color:white;
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:12px;
+.compacta p{
+  font-size:16px;
+  line-height:1.5;
+  margin-bottom:0;
 }
 
 .panel{
-  padding:35px 6%;
+  padding:20px 6% 35px;
   display:grid;
   grid-template-columns:230px 1fr 340px;
   gap:25px;
@@ -268,6 +211,7 @@ input,select,textarea{
   width:100%;
   height:190px;
   object-fit:cover;
+  background:var(--crema);
 }
 
 .cardBody{
@@ -499,17 +443,60 @@ footer{
 }
 
 @media(max-width:1100px){
-  .panel{grid-template-columns:1fr}
-  .carrito{position:relative;top:0}
+  .panel{
+    grid-template-columns:1fr;
+  }
+
+  .carrito{
+    position:relative;
+    top:0;
+  }
 }
 
 @media(max-width:800px){
-  header{flex-direction:column;gap:14px}
-  nav{text-align:center}
-  .hero{padding:38px}
-  .hero h1{font-size:48px}
-  .info{grid-template-columns:1fr}
-  .filtros{grid-template-columns:1fr}
+  header{
+    flex-direction:column;
+    gap:14px;
+    padding:16px 4%;
+  }
+
+  nav{
+    text-align:center;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+
+  nav a{
+    margin:0;
+    font-size:14px;
+  }
+
+  .logo{
+    font-size:38px;
+  }
+
+  .compacta{
+    padding:20px;
+    margin:16px 4%;
+  }
+
+  .compacta h2{
+    font-size:26px;
+  }
+
+  .panel{
+    padding:20px 4%;
+  }
+
+  .filtros{
+    grid-template-columns:1fr;
+  }
+
+  .card img{
+    height:150px;
+  }
 }
 </style>
 </head>
@@ -523,7 +510,6 @@ footer{
     <a href="index.html" class="volverBtn">← Volver</a>
     <a href="#catalogo">Catálogo</a>
     <a href="#sobre">Sobre nosotros</a>
-    <a href="#servicios">Servicios</a>
     <a href="#contacto">Contacto</a>
   </nav>
 
@@ -541,38 +527,12 @@ footer{
   </div>
 </header>
 
-<section class="hero">
-  <small>Bienvenidos a</small>
-  <h1>Espacio Oliva</h1>
-  <p>Un espacio para desconectarse, compartir, trabajar distinto y disfrutar productos seleccionados para cada momento.</p>
-</section>
-
-<section class="info">
-  <div>☕ <b>Cafetería</b><br>Productos seleccionados</div>
-  <div>🏢 <b>Empresas</b><br>Viandas y coffee break</div>
-  <div>🌿 <b>Experiencias</b><br>Eventos privados</div>
-</section>
-
-<section id="sobre" class="seccion">
+<section id="sobre" class="seccion compacta">
   <h2>Sobre Espacio Oliva</h2>
-  <p>Espacio Oliva es un lugar pensado para desconectarse del ritmo diario, bajar un cambio, compartir una charla, tener una reunión distinta o simplemente disfrutar un buen café.</p>
-  <p>Formamos parte del ecosistema IEC, ubicado en calle Gualeguaychú 449, en la ciudad de Paraná, Entre Ríos.</p>
-  <p>Desde la inteligencia operativa aplicada a recursos humanos, creemos que las empresas que cuidan a sus equipos construyen mejores ambientes laborales y fortalecen sus políticas de retención de talento.</p>
-  <p><b>Comer bien se trabaja mejor.</b></p>
-</section>
-
-<section id="servicios" class="seccion">
-  <h2>Servicios</h2>
-
-  <div class="servicios">
-    <div class="servicio"><h3>Alquiler de salón</h3><p>Eventos privados, reuniones y encuentros especiales.</p></div>
-    <div class="servicio"><h3>Reuniones empresariales</h3><p>Un espacio privado para trabajar distinto.</p></div>
-    <div class="servicio"><h3>Coffee break storming</h3><p>Café, ideas y productividad para equipos.</p></div>
-    <div class="servicio"><h3>Simposios</h3><p>Charlas, capacitaciones y encuentros institucionales.</p></div>
-    <div class="servicio"><h3>Oliva Games</h3><p>Experiencias recreativas para equipos.</p><span class="badge">Muy pronto</span></div>
-    <div class="servicio"><h3>Viandas empresariales</h3><p>Opciones gastronómicas para empleados y empresas.</p></div>
-    <div class="servicio"><h3>Multiespacio 100% privado</h3><p>Reservas exclusivas para empresas e instituciones.</p></div>
-  </div>
+  <p>
+    Espacio Oliva es un espacio gastronómico del ecosistema IEC, ubicado en Gualeguaychú 449, Paraná.
+    Creamos propuestas para comer bien, trabajar mejor y compartir experiencias privadas.
+  </p>
 </section>
 
 <main id="catalogo" class="panel">
@@ -611,10 +571,10 @@ footer{
 
 </main>
 
-<section id="contacto" class="seccion">
+<section id="contacto" class="seccion compacta">
   <h2>Contacto</h2>
   <p><b>Dirección:</b> Gualeguaychú 449, Paraná, Entre Ríos.</p>
-  <p><b>Propuesta:</b> cafetería, viandas, eventos privados, reuniones empresariales y experiencias para equipos.</p>
+  <p><b>WhatsApp:</b> +54 9 3434 64-9039</p>
 </section>
 
 <footer>
@@ -639,7 +599,7 @@ footer{
         Columnas requeridas: nombre, categoria, marca, precio, stock, imagen
       </p>
       <p style="font-size:13px;margin-bottom:12px;">
-        En la columna <b>imagen</b> pegá el link directo de Postimage.
+        En la columna <b>imagen</b> usá un link directo a imagen, por ejemplo de Postimage: <b>https://i.postimg.cc/.../foto.jpg</b>
       </p>
       <label class="uploadLabel" for="excel">📥 Subir Excel</label>
       <input type="file" id="excel" accept=".xlsx,.xls,.csv">
@@ -650,7 +610,7 @@ footer{
 </div>
 
 <script>
-const WHATSAPP_NUMERO = "5493434664964";
+const WHATSAPP_NUMERO = "5493434649039";
 const DATA_EXCEL_URL = "/data/catalogo.xlsx";
 const ADMIN_ENDPOINT = "/api/admin";
 const TIPO_EXCEL = "catalogo";
@@ -675,6 +635,35 @@ function setEstado(id, mensaje, tipo = ""){
   el.innerText = mensaje || "";
 }
 
+function fallbackImagen(texto = "Espacio+Oliva"){
+  return `https://placehold.co/600x400/f4f0e6/6f7650?text=${texto}`;
+}
+
+function resolverImagen(valor){
+  let img = String(valor || "").trim();
+
+  if(!img){
+    return fallbackImagen();
+  }
+
+  if(img.includes("drive.google.com")){
+    const match = img.match(/\/d\/([^/]+)/) || img.match(/[?&]id=([^&]+)/);
+    if(match && match[1]){
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+  }
+
+  if(img.includes("postimg.cc") && !img.includes("i.postimg.cc")){
+    return fallbackImagen("Link+no+directo");
+  }
+
+  if(!/^https?:\/\//i.test(img)){
+    return fallbackImagen("Imagen+inválida");
+  }
+
+  return img;
+}
+
 function normalizarProducto(f){
   return {
     nombre: f.nombre || f.Nombre || "Producto sin nombre",
@@ -682,7 +671,7 @@ function normalizarProducto(f){
     marca: f.marca || f.Marca || "Espacio Oliva",
     precio: Number(f.precio || f.Precio || 0),
     stock: Number(f.stock || f.Stock || 0),
-    imagen: f.imagen || f.Imagen || "https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva"
+    imagen: resolverImagen(f.imagen || f.Imagen || f.foto || f.Foto)
   };
 }
 
@@ -793,7 +782,7 @@ function renderProductos(){
 
     return `
       <article class="card">
-        <img src="${p.imagen}" onerror="this.src='https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva'">
+        <img src="${p.imagen}" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImagen()}'">
         <div class="cardBody">
           <div class="rubro">${p.categoria}</div>
           <h4>${p.nombre}</h4>
@@ -814,7 +803,7 @@ function renderProductos(){
   }).join("") : `
     <div class="emptyCatalog">
       <h3>Catálogo sin productos cargados</h3>
-      <p>Ingresá como administrador desde el ícono superior y subí el archivo Excel. Al guardarse en GitHub, todos van a verlo desde cualquier dispositivo.</p>
+      <p>Ingresá como administrador y subí el archivo Excel. Al guardarse en GitHub, todos van a verlo desde cualquier dispositivo.</p>
     </div>
   `;
 }
