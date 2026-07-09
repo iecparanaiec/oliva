@@ -14,60 +14,66 @@ const RUTAS = {
   catering: "data/catering.xlsx"
 };
 
+function clean(v) {
+  return String(v || "").trim();
+}
+
 function validarAdmin(user, pass) {
   return (
-    user === process.env.ADMIN_USER &&
-    pass === process.env.ADMIN_PASS
+    clean(user) === clean(process.env.ADMIN_USER) &&
+    clean(pass) === clean(process.env.ADMIN_PASS)
   );
 }
 
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
-      return res.status(405).json({
-        ok: false,
-        error: "Método no permitido. Usá POST."
-      });
+      return res.status(405).json({ ok: false, error: "Método no permitido. Usá POST." });
     }
 
     const { action, user, pass, tipo, contentBase64 } = req.body || {};
 
+    if (action === "debug") {
+      return res.status(200).json({
+        ok: true,
+        hasAdminUser: !!process.env.ADMIN_USER,
+        hasAdminPass: !!process.env.ADMIN_PASS,
+        adminUserLength: clean(process.env.ADMIN_USER).length,
+        adminPassLength: clean(process.env.ADMIN_PASS).length,
+        receivedUserLength: clean(user).length,
+        receivedPassLength: clean(pass).length
+      });
+    }
+
     if (!validarAdmin(user, pass)) {
       return res.status(401).json({
         ok: false,
-        error: "Usuario o contraseña incorrectos."
+        error: "Usuario o contraseña incorrectos.",
+        debug: {
+          hasAdminUser: !!process.env.ADMIN_USER,
+          hasAdminPass: !!process.env.ADMIN_PASS,
+          receivedUserLength: clean(user).length,
+          receivedPassLength: clean(pass).length
+        }
       });
     }
 
     if (action === "login") {
-      return res.status(200).json({
-        ok: true,
-        message: "Login correcto."
-      });
+      return res.status(200).json({ ok: true, message: "Login correcto." });
     }
 
     if (action === "uploadExcel") {
       const path = RUTAS[tipo];
 
       if (!path) {
-        return res.status(400).json({
-          ok: false,
-          error: "Tipo inválido. Usá catalogo, eventos o catering."
-        });
+        return res.status(400).json({ ok: false, error: "Tipo inválido. Usá catalogo, eventos o catering." });
       }
 
       if (!contentBase64) {
-        return res.status(400).json({
-          ok: false,
-          error: "No se recibió contenido Base64."
-        });
+        return res.status(400).json({ ok: false, error: "No se recibió contenido Base64." });
       }
 
-      const result = await saveFile(
-        path,
-        contentBase64,
-        `Actualizar ${path}`
-      );
+      const result = await saveFile(path, contentBase64, `Actualizar ${path}`);
 
       return res.status(200).json({
         ok: true,
@@ -81,10 +87,7 @@ export default async function handler(req, res) {
       const path = RUTAS[tipo];
 
       if (!path) {
-        return res.status(400).json({
-          ok: false,
-          error: "Tipo inválido."
-        });
+        return res.status(400).json({ ok: false, error: "Tipo inválido." });
       }
 
       const file = await getFile(path);
@@ -112,10 +115,7 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(400).json({
-      ok: false,
-      error: "Acción inválida."
-    });
+    return res.status(400).json({ ok: false, error: "Acción inválida." });
 
   } catch (error) {
     return res.status(500).json({
