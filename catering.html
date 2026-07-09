@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espacio Oliva | Catering & Más</title>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+:root{
+  --oliva:#8f9570;
+  --olivaOscuro:#626a43;
+  --crema:#f5f0e4;
+  --beige:#e8dec8;
+  --blanco:#fffaf0;
+  --texto:#373426;
+  --sombra:0 14px 35px rgba(0,0,0,.16);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:Arial, sans-serif;
+  background:var(--crema);
+  color:var(--texto);
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(245,240,228,.95);
+  backdrop-filter:blur(10px);
+  padding:22px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+
+.logo{
+  font-family:Georgia, serif;
+  color:var(--olivaOscuro);
+  font-size:44px;
+  line-height:.85;
+}
+
+.logo span{
+  display:block;
+  font-size:22px;
+  font-style:italic;
+}
+
+nav a{
+  margin:0 14px;
+  color:var(--texto);
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.volverBtn{
+  background:var(--olivaOscuro);
+  color:white !important;
+  padding:10px 16px;
+  border-radius:14px;
+}
+
+.adminIcon{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:1px solid var(--olivaOscuro);
+  background:transparent;
+  color:var(--olivaOscuro);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.adminIcon:hover{
+  background:var(--olivaOscuro);
+  color:white;
+}
+
+.adminIcon svg{
+  width:22px;
+  height:22px;
+}
+
+.hero{
+  margin:25px 6%;
+  min-height:390px;
+  border-radius:28px;
+  background:
+  linear-gradient(90deg,rgba(98,106,67,.96),rgba(143,149,112,.38)),
+  url("https://images.unsplash.com/photo-1526234362653-3b75a0c07438?auto=format&fit=crop&w=1600&q=80");
+  background-size:cover;
+  background-position:center;
+  color:white;
+  padding:70px;
+  box-shadow:var(--sombra);
+}
+
+.hero small{
+  font-family:Georgia, serif;
+  font-size:24px;
+  font-style:italic;
+}
+
+.hero h1{
+  font-family:Georgia, serif;
+  font-size:72px;
+  margin:12px 0;
+}
+
+.hero p{
+  max-width:580px;
+  font-size:20px;
+  line-height:1.5;
+}
+
+.info{
+  margin:25px 6%;
+  padding:25px;
+  background:var(--oliva);
+  color:white;
+  border-radius:18px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  text-align:center;
+  gap:20px;
+  box-shadow:var(--sombra);
+}
+
+.seccion{
+  margin:35px 6%;
+  background:var(--blanco);
+  padding:45px;
+  border-radius:26px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.seccion h2{
+  font-family:Georgia, serif;
+  color:var(--olivaOscuro);
+  font-size:44px;
+  margin-bottom:18px;
+}
+
+.seccion p{
+  font-size:18px;
+  line-height:1.7;
+  margin-bottom:12px;
+}
+
+.servicios{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
+  margin-top:25px;
+}
+
+.servicio{
+  background:var(--crema);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 6px 16px rgba(0,0,0,.05);
+}
+
+.servicio h3{
+  color:var(--olivaOscuro);
+  margin-bottom:8px;
+}
+
+.catalogoPanel{
+  display:grid;
+  grid-template-columns:250px 1fr 340px;
+  gap:25px;
+  margin-top:25px;
+}
+
+.sidebar,.pedidoBox{
+  background:var(--crema);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.sidebar h3,.pedidoBox h3{
+  color:var(--olivaOscuro);
+  margin-bottom:15px;
+}
+
+.filtros{
+  display:grid;
+  gap:12px;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:13px;
+  border-radius:13px;
+  border:1px solid #d6ccb9;
+  font-size:15px;
+  background:white;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:22px;
+}
+
+.card{
+  background:var(--blanco);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.card img{
+  width:100%;
+  height:190px;
+  object-fit:cover;
+}
+
+.cardBody{
+  padding:18px;
+}
+
+.rubro{
+  color:var(--olivaOscuro);
+  font-size:13px;
+  font-weight:bold;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.card h4{
+  font-size:19px;
+  min-height:46px;
+}
+
+.detalle{
+  color:#736c5a;
+  font-size:14px;
+  margin-top:8px;
+  line-height:1.45;
+}
+
+.precio{
+  font-size:24px;
+  color:var(--olivaOscuro);
+  font-weight:bold;
+  margin:14px 0;
+}
+
+.cantidad{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.cantidad button{
+  background:var(--beige);
+  border:0;
+  padding:9px 13px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.agregar{
+  width:100%;
+  background:var(--oliva);
+  color:white;
+  border:0;
+  padding:12px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.pedidoBox{
+  background:var(--oliva);
+  color:white;
+  position:sticky;
+  top:115px;
+  height:max-content;
+}
+
+.pedidoBox h3{
+  color:white;
+  font-size:26px;
+}
+
+.itemPedido{
+  display:grid;
+  grid-template-columns:1fr auto;
+  border-bottom:1px solid rgba(255,255,255,.3);
+  padding:13px 0;
+  gap:10px;
+}
+
+.itemPedido button{
+  background:transparent;
+  color:white;
+  border:1px solid white;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  cursor:pointer;
+}
+
+.total{
+  font-size:32px;
+  font-weight:bold;
+  margin:22px 0;
+}
+
+.pedidoBox label{
+  display:block;
+  margin:12px 0 6px;
+  font-weight:bold;
+}
+
+.pedidoBox input,
+.pedidoBox select,
+.pedidoBox textarea{
+  border:0;
+}
+
+.whatsapp,.limpiar,.editar,.guardar{
+  width:100%;
+  border:0;
+  padding:13px;
+  border-radius:13px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:12px;
+}
+
+.whatsapp{
+  background:white;
+  color:var(--olivaOscuro);
+}
+
+.limpiar,.editar{
+  background:transparent;
+  color:white;
+  border:1px solid white;
+}
+
+.guardar{
+  background:white;
+  color:var(--olivaOscuro);
+}
+
+.mensajeBox{
+  display:none;
+  margin-top:15px;
+}
+
+.mensajeBox textarea{
+  min-height:220px;
+}
+
+.emptyCatalog{
+  grid-column:1/-1;
+  background:var(--blanco);
+  border-radius:22px;
+  padding:45px;
+  text-align:center;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.emptyCatalog h3{
+  color:var(--olivaOscuro);
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:999;
+  align-items:center;
+  justify-content:center;
+}
+
+.modalContent{
+  background:var(--blanco);
+  width:90%;
+  max-width:430px;
+  border-radius:24px;
+  padding:32px;
+  box-shadow:var(--sombra);
+  text-align:center;
+}
+
+.modalContent h2,.modalContent h3{
+  color:var(--olivaOscuro);
+  margin-bottom:15px;
+}
+
+.modalContent input{
+  margin-bottom:12px;
+}
+
+.modalContent button,.uploadLabel{
+  display:block;
+  width:100%;
+  background:var(--olivaOscuro);
+  color:white;
+  border:0;
+  padding:13px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.cerrar{
+  background:#b8aa8d!important;
+}
+
+#excel{
+  display:none;
+}
+
+footer{
+  margin:35px 6%;
+  padding:32px;
+  background:var(--oliva);
+  color:white;
+  border-radius:22px;
+  text-align:center;
+}
+
+@media(max-width:1100px){
+  .catalogoPanel{grid-template-columns:1fr}
+  .pedidoBox{position:relative;top:0}
+  .info{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:800px){
+  header{flex-direction:column;gap:14px}
+  nav{text-align:center}
+  .hero{padding:38px}
+  .hero h1{font-size:46px}
+  .info{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><span>Espacio</span>Oliva</div>
+
+  <nav>
+    <a href="index.html" class="volverBtn">← Volver</a>
+    <a href="#catering">Catering</a>
+    <a href="#opciones">Opciones</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <button class="adminIcon" onclick="abrirLogin()" title="Acceso administrador">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="8" r="4"></circle>
+      <path d="M4 21c1.6-4.4 5-6.5 8-6.5s6.4 2.1 8 6.5"></path>
+    </svg>
+  </button>
+</header>
+
+<section class="hero">
+  <small>Catering & Más</small>
+  <h1>Espacio Oliva</h1>
+  <p>
+    Servicio de catering para eventos corporativos, reuniones privadas, capacitaciones,
+    lanzamientos, jornadas institucionales y encuentros de diferente índole.
+  </p>
+</section>
+
+<section class="info">
+  <div>🍽️ <b>Catering</b><br>Eventos externos</div>
+  <div>🏢 <b>Empresas</b><br>Jornadas y reuniones</div>
+  <div>☕ <b>Coffee break</b><br>Dulce y salado</div>
+  <div>🌿 <b>Bienestar</b><br>Comer bien se trabaja mejor</div>
+</section>
+
+<section id="catering" class="seccion">
+  <h2>Catering para eventos</h2>
+  <p>
+    Llevamos la experiencia de Espacio Oliva fuera del espacio: propuestas gastronómicas
+    para empresas, instituciones, equipos de trabajo, eventos privados y encuentros especiales.
+  </p>
+  <p>
+    Diseñamos opciones según la cantidad de personas, el tipo de evento, el horario, la dinámica
+    de trabajo y la necesidad del cliente.
+  </p>
+
+  <div class="servicios">
+    <div class="servicio"><h3>Catering corporativo</h3><p>Para reuniones, capacitaciones, jornadas internas y encuentros de equipo.</p></div>
+    <div class="servicio"><h3>Coffee break</h3><p>Opciones dulces, saladas, café, infusiones y propuestas por cantidad de personas.</p></div>
+    <div class="servicio"><h3>Eventos privados</h3><p>Catering para encuentros familiares, sociales o celebraciones íntimas.</p></div>
+    <div class="servicio"><h3>Exposiciones y lanzamientos</h3><p>Servicio gastronómico para presentación de productos, marcas o servicios.</p></div>
+    <div class="servicio"><h3>Viandas para equipos</h3><p>Alternativas para jornadas largas, almuerzos de trabajo y bienestar laboral.</p></div>
+    <div class="servicio"><h3>Propuestas a medida</h3><p>Armamos el servicio según presupuesto, cantidad de invitados y formato del evento.</p></div>
+  </div>
+</section>
+
+<section id="opciones" class="seccion">
+  <h2>Opciones disponibles</h2>
+  <p>
+    Seleccioná las opciones que te interesen y enviá una consulta por WhatsApp.
+    El catálogo se carga desde Excel mediante acceso administrador.
+  </p>
+
+  <div class="catalogoPanel">
+
+    <aside class="sidebar">
+      <h3>Filtros</h3>
+
+      <div class="filtros">
+        <input id="buscar" placeholder="Buscar opción..." oninput="renderOpciones()">
+
+        <select id="filtroCategoria" onchange="renderOpciones()">
+          <option value="">Todas las categorías</option>
+        </select>
+
+        <select id="filtroPersonas" onchange="renderOpciones()">
+          <option value="">Todas las cantidades</option>
+        </select>
+      </div>
+
+      <div style="margin-top:20px;font-size:14px;line-height:1.5;">
+        <b>Excel de catering:</b><br>
+        nombre, categoria, personas, descripcion, precio, imagen
+      </div>
+    </aside>
+
+    <section>
+      <div class="grid" id="opcionesGrid"></div>
+    </section>
+
+    <aside class="pedidoBox">
+      <h3>Consulta</h3>
+      <div id="itemsPedido"></div>
+      <div class="total" id="total">$0</div>
+
+      <label>Nombre y apellido</label>
+      <input id="clienteNombre" placeholder="Ej: Flor Solari">
+
+      <label>Empresa / institución</label>
+      <input id="clienteEmpresa" placeholder="Ej: Empresa / particular">
+
+      <label>Teléfono</label>
+      <input id="clienteTelefono" placeholder="Ej: 343...">
+
+      <label>Fecha estimada del evento</label>
+      <input id="clienteFecha" type="date">
+
+      <label>Cantidad estimada de personas</label>
+      <input id="clientePersonas" type="number" min="1" placeholder="Ej: 30">
+
+      <label>Tipo de evento</label>
+      <select id="clienteEvento">
+        <option>Evento corporativo</option>
+        <option>Reunión privada</option>
+        <option>Capacitación / jornada</option>
+        <option>Exposición de productos</option>
+        <option>Coffee break</option>
+        <option>Evento social</option>
+        <option>Otro</option>
+      </select>
+
+      <label>Mensaje adicional</label>
+      <textarea id="clienteMensaje" placeholder="Contanos qué necesitás..."></textarea>
+
+      <button class="whatsapp" onclick="enviarConsulta()">Enviar consulta por WhatsApp</button>
+      <button class="editar" onclick="toggleMensaje()">Modificar mensaje</button>
+      <button class="limpiar" onclick="limpiarPedido()">Limpiar pedido</button>
+
+      <div class="mensajeBox" id="mensajeBox">
+        <textarea id="mensajeManual"></textarea>
+        <button class="guardar" onclick="guardarMensaje()">Guardar mensaje</button>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<section id="contacto" class="seccion">
+  <h2>Contacto</h2>
+  <p><b>Dirección:</b> Gualeguaychú 449, Paraná, Entre Ríos.</p>
+  <p><b>WhatsApp:</b> +54 9 3434 64-9039</p>
+  <p><b>Servicio:</b> catering para eventos corporativos, privados, coffee break, jornadas, capacitaciones y más.</p>
+</section>
+
+<footer>
+  Espacio Oliva · Catering & Más · Ecosistema IEC · Gualeguaychú 449 · Paraná, Entre Ríos
+</footer>
+
+<div class="modal" id="loginModal">
+  <div class="modalContent">
+    <h2>Acceso administrador</h2>
+
+    <div id="loginBox">
+      <input id="adminUser" placeholder="Usuario">
+      <input id="adminPass" type="password" placeholder="Contraseña">
+      <button onclick="validarLogin()">Ingresar</button>
+      <button class="cerrar" onclick="cerrarLogin()">Cancelar</button>
+    </div>
+
+    <div id="uploadBox" style="display:none;">
+      <h3>Subir Excel de catering</h3>
+      <p style="font-size:14px;margin-bottom:10px;">
+        Columnas: nombre, categoria, personas, descripcion, precio, imagen
+      </p>
+      <p style="font-size:13px;margin-bottom:12px;">
+        En imagen podés pegar un link directo de Postimage.
+      </p>
+      <label class="uploadLabel" for="excel">📥 Subir Excel</label>
+      <input type="file" id="excel" accept=".xlsx,.xls,.csv">
+      <button class="cerrar" onclick="cerrarLogin()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WHATSAPP_NUMERO = "5493434649039";
+
+let opciones = [];
+let pedido = [];
+let mensajePersonalizado = "";
+
+function dinero(n){
+  return "$" + Number(n || 0).toLocaleString("es-AR");
+}
+
+function abrirLogin(){
+  document.getElementById("loginModal").style.display = "flex";
+  document.getElementById("loginBox").style.display = "block";
+  document.getElementById("uploadBox").style.display = "none";
+  document.getElementById("adminUser").value = "";
+  document.getElementById("adminPass").value = "";
+}
+
+function cerrarLogin(){
+  document.getElementById("loginModal").style.display = "none";
+}
+
+function validarLogin(){
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+
+  if(user === "FlorSolari" && pass === "Oliva449"){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("uploadBox").style.display = "block";
+  }else{
+    alert("Usuario o contraseña incorrectos.");
+  }
+}
+
+function normalizarOpcion(f){
+  return {
+    nombre: f.nombre || f.Nombre || "Opción sin nombre",
+    categoria: f.categoria || f.Categoria || "Catering",
+    personas: String(f.personas || f.Personas || "Consultar").trim(),
+    descripcion: f.descripcion || f.Descripcion || f.descripción || f.Descripción || "",
+    precio: Number(f.precio || f.Precio || 0),
+    imagen: f.imagen || f.Imagen || "https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva"
+  };
+}
+
+document.getElementById("excel").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(evt){
+    const data = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(data,{type:"array"});
+    const hoja = workbook.Sheets[workbook.SheetNames[0]];
+    const filas = XLSX.utils.sheet_to_json(hoja);
+
+    opciones = filas.map(normalizarOpcion);
+    pedido = [];
+    mensajePersonalizado = "";
+
+    cargarFiltros();
+    renderOpciones();
+    renderPedido();
+
+    alert("Opciones de catering actualizadas desde Excel.");
+    cerrarLogin();
+  };
+
+  reader.readAsArrayBuffer(file);
+});
+
+function cargarFiltros(){
+  const categorias = ["", ...new Set(opciones.map(o=>o.categoria))];
+  const personas = ["", ...new Set(opciones.map(o=>o.personas))];
+
+  document.getElementById("filtroCategoria").innerHTML =
+    categorias.map(c => `<option value="${c}">${c || "Todas las categorías"}</option>`).join("");
+
+  document.getElementById("filtroPersonas").innerHTML =
+    personas.map(p => `<option value="${p}">${p || "Todas las cantidades"}</option>`).join("");
+}
+
+function renderOpciones(){
+  const q = document.getElementById("buscar").value.toLowerCase();
+  const categoria = document.getElementById("filtroCategoria").value;
+  const personas = document.getElementById("filtroPersonas").value;
+
+  const lista = opciones.filter(o =>
+    o.nombre.toLowerCase().includes(q) &&
+    (!categoria || o.categoria === categoria) &&
+    (!personas || o.personas === personas)
+  );
+
+  const grid = document.getElementById("opcionesGrid");
+
+  grid.innerHTML = lista.length ? lista.map(o=>{
+    const i = opciones.indexOf(o);
+
+    return `
+      <article class="card">
+        <img src="${o.imagen}" onerror="this.src='https://placehold.co/600x400/f4f0e6/6f7650?text=Espacio+Oliva'">
+        <div class="cardBody">
+          <div class="rubro">${o.categoria}</div>
+          <h4>${o.nombre}</h4>
+          <p class="detalle"><b>Personas:</b> ${o.personas}</p>
+          <p class="detalle">${o.descripcion}</p>
+          <div class="precio">${o.precio ? dinero(o.precio) : "Consultar"}</div>
+
+          <div class="cantidad">
+            <button onclick="cambiarCantidad(${i},-1)">−</button>
+            <span id="cant-${i}">1</span>
+            <button onclick="cambiarCantidad(${i},1)">+</button>
+          </div>
+
+          <button class="agregar" onclick="agregarPedido(${i})">Agregar a consulta</button>
+        </div>
+      </article>
+    `;
+  }).join("") : `
+    <div class="emptyCatalog">
+      <h3>Sin opciones cargadas</h3>
+      <p>Ingresá como administrador y subí el Excel de catering.</p>
+    </div>
+  `;
+}
+
+function cambiarCantidad(i,delta){
+  const el = document.getElementById("cant-"+i);
+  if(!el) return;
+
+  let n = Number(el.innerText) + delta;
+  if(n < 1) n = 1;
+  el.innerText = n;
+}
+
+function agregarPedido(i){
+  const el = document.getElementById("cant-"+i);
+  const cantidad = el ? Number(el.innerText) : 1;
+  const opcion = opciones[i];
+
+  const existe = pedido.find(x => x.nombre === opcion.nombre);
+
+  if(existe){
+    existe.cantidad += cantidad;
+  }else{
+    pedido.push({...opcion,cantidad});
+  }
+
+  mensajePersonalizado = "";
+  renderPedido();
+}
+
+function eliminarItem(i){
+  pedido.splice(i,1);
+  mensajePersonalizado = "";
+  renderPedido();
+}
+
+function limpiarPedido(){
+  pedido = [];
+  mensajePersonalizado = "";
+  renderPedido();
+}
+
+function renderPedido(){
+  const total = pedido.reduce((a,p)=>a + Number(p.precio) * Number(p.cantidad),0);
+
+  document.getElementById("itemsPedido").innerHTML = pedido.length ? pedido.map((p,i)=>`
+    <div class="itemPedido">
+      <div>
+        <b>${p.nombre}</b><br>
+        ${p.cantidad} x ${p.precio ? dinero(p.precio) : "Consultar"}
+      </div>
+      <button onclick="eliminarItem(${i})">×</button>
+    </div>
+  `).join("") : "<p>No hay opciones seleccionadas.</p>";
+
+  document.getElementById("total").innerText = total ? dinero(total) : "$0";
+  document.getElementById("mensajeManual").value = generarMensaje();
+}
+
+function generarMensaje(){
+  if(mensajePersonalizado) return mensajePersonalizado;
+
+  const nombre = document.getElementById("clienteNombre").value.trim();
+  const empresa = document.getElementById("clienteEmpresa").value.trim();
+  const telefono = document.getElementById("clienteTelefono").value.trim();
+  const fecha = document.getElementById("clienteFecha").value;
+  const personas = document.getElementById("clientePersonas").value;
+  const evento = document.getElementById("clienteEvento").value;
+  const extra = document.getElementById("clienteMensaje").value.trim();
+
+  let mensaje = "¡Hola! 👋\n\n";
+  mensaje += "Quiero hacer una consulta por el servicio de Catering & Más de Espacio Oliva.\n\n";
+
+  if(pedido.length){
+    mensaje += "Opciones seleccionadas:\n";
+    pedido.forEach(p=>{
+      mensaje += `• ${p.nombre} x${p.cantidad} · ${p.personas} personas · ${p.precio ? dinero(p.precio * p.cantidad) : "Consultar"}\n`;
+    });
+
+    const total = pedido.reduce((a,p)=>a + Number(p.precio) * Number(p.cantidad),0);
+    if(total) mensaje += `\nSubtotal estimado: ${dinero(total)}\n`;
+  }else{
+    mensaje += "Todavía no seleccioné una opción específica, quiero recibir asesoramiento.\n";
+  }
+
+  mensaje += "\nDatos del evento:\n";
+  mensaje += `Nombre: ${nombre || "No indicado"}\n`;
+  mensaje += `Empresa/Institución: ${empresa || "No indicada"}\n`;
+  mensaje += `Teléfono: ${telefono || "No indicado"}\n`;
+  mensaje += `Fecha estimada: ${fecha || "No indicada"}\n`;
+  mensaje += `Cantidad de personas: ${personas || "No indicada"}\n`;
+  mensaje += `Tipo de evento: ${evento}\n`;
+
+  if(extra){
+    mensaje += `\nMensaje adicional:\n${extra}\n`;
+  }
+
+  mensaje += "\nQuedo atento/a a la información. ¡Gracias!";
+  return mensaje;
+}
+
+function toggleMensaje(){
+  const box = document.getElementById("mensajeBox");
+  box.style.display = box.style.display === "block" ? "none" : "block";
+  document.getElementById("mensajeManual").value = generarMensaje();
+}
+
+function guardarMensaje(){
+  mensajePersonalizado = document.getElementById("mensajeManual").value;
+  alert("Mensaje guardado.");
+}
+
+function enviarConsulta(){
+  const mensaje = encodeURIComponent(document.getElementById("mensajeManual").value || generarMensaje());
+  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`,"_blank");
+}
+
+[
+  "clienteNombre",
+  "clienteEmpresa",
+  "clienteTelefono",
+  "clienteFecha",
+  "clientePersonas",
+  "clienteEvento",
+  "clienteMensaje"
+].forEach(id=>{
+  document.getElementById(id).addEventListener("input", ()=>{
+    if(!mensajePersonalizado){
+      document.getElementById("mensajeManual").value = generarMensaje();
+    }
+  });
+});
+
+cargarFiltros();
+renderOpciones();
+renderPedido();
+</script>
+
+</body>
+</html>
