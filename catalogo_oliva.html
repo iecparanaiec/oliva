@@ -640,28 +640,31 @@ function fallbackImagen(texto = "Espacio+Oliva"){
 }
 
 function resolverImagen(valor){
-  let img = String(valor || "").trim();
 
-  if(!img){
-    return fallbackImagen();
-  }
+    let img = String(valor || "").trim();
 
-  if(img.includes("drive.google.com")){
-    const match = img.match(/\/d\/([^/]+)/) || img.match(/[?&]id=([^&]+)/);
-    if(match && match[1]){
-      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    if(!img){
+        return fallbackImagen();
     }
-  }
 
-  if(img.includes("postimg.cc") && !img.includes("i.postimg.cc")){
-    return fallbackImagen("Link+no+directo");
-  }
+    // Google Drive
+    if(img.includes("drive.google.com")){
+        const match =
+            img.match(/\/d\/([^/]+)/) ||
+            img.match(/[?&]id=([^&]+)/);
 
-  if(!/^https?:\/\//i.test(img)){
-    return fallbackImagen("Imagen+inválida");
-  }
+        if(match && match[1]){
+            return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        }
+    }
 
-  return img;
+    // Si no empieza con http o https
+    if(!/^https?:\/\//i.test(img)){
+        return fallbackImagen("Imagen+inválida");
+    }
+
+    return img;
+
 }
 
 function normalizarProducto(f){
